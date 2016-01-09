@@ -4,9 +4,9 @@ using System.Threading;
 using System.Linq;
 using System.Text;
 
-namespace Buttercup {
+namespace Buttercup.Proxy {
 
-	public class ButtercupProxyServer {
+	public class Server {
 
 		private readonly HttpListener _listener = new HttpListener();
 		private readonly Func<HttpListenerRequest, string> _responderMethod;
@@ -14,7 +14,7 @@ namespace Buttercup {
 		// Adapted from the example here:
 		//   https://codehosting.net/blog/BlogEngine/post/Simple-C-Web-Server.aspx
 
-		public ButtercupProxyServer(string[] prefixes, Func<HttpListenerRequest, string> method) {
+		public Server(string[] prefixes, Func<HttpListenerRequest, string> method) {
 			if (!HttpListener.IsSupported) {
 				throw new NotSupportedException("HTTP listener not supported");
 			}
@@ -38,7 +38,7 @@ namespace Buttercup {
 			_listener.Start();
 		}
 
-		public ButtercupProxyServer(Func<HttpListenerRequest, string> method, params string[] prefixes)
+		public Server(Func<HttpListenerRequest, string> method, params string[] prefixes)
 			: this(prefixes, method) { }
 
 		public void run() {
