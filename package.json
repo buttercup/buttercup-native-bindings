@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/buttercup-pw/buttercup-native-bindings#readme",
   "devDependencies": {
-    "nodeunit": "^0.9.1"
+    "nodeunit": "^0.9.1",
+    "rimraf": "^2.5.4"
   }
 }

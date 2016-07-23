@@ -10,6 +10,9 @@ function resolvePropertyContext(propertyChain, object) {
     if (propertyChain.length > 1) {
         let key = propertyChain.shift(),
             nextObject = (object.hasOwnProperty(key)) ? object[key] : (object[key] = {});
+        if (typeof nextObject !== "object" || nextObject === null) {
+            nextObject = {};
+        }
         return resolvePropertyContext(propertyChain, nextObject);
     } else {
         return {
@@ -33,7 +36,7 @@ class Config {
         if (config.hasOwnProperty(lastKey)) {
             return config[lastKey];
         }
-        return undefined;
+        return defaultValue;
     }
 
     push(property, value) {
@@ -54,14 +57,21 @@ class Config {
 
 }
 
-Config.loadFromDefault = function loadFromDefault(defaultName) {
-    let def = defaults[defaultName];
+Config.loadFromDefault = function loadFromDefault(defaultNameOrObject) {
+    let def = (typeof defaultNameOrObject === "string") ? defaults[defaultName] : defaultNameOrObject;
     if (!def) {
         throw new Error(`Unknown default: ${defaultName}`);
     }
-    let raw = fs.readFileSync(def.configFilename),
-        config = JSON.parse(raw);
-    return new Config(config);
+    let raw;
+    return new Promise(function(resolve) {
+        fs.readFile(def.configFilename, "utf8", function(err, contents) {
+            if (err) {
+                resolve(new Config({}));
+            } else {
+                resolve(new Config(JSON.parse(contents)));
+            }
+        });
+    });
 };
 
 module.exports = Config;
