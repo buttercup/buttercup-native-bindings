@@ -9,7 +9,7 @@ const defaults = {
 function resolvePropertyContext(propertyChain, object) {
     if (propertyChain.length > 1) {
         let key = propertyChain.shift(),
-            nextObject = (object.hasOwnProperty(key)) ? object[key] : {};
+            nextObject = (object.hasOwnProperty(key)) ? object[key] : (object[key] = {});
         return resolvePropertyContext(propertyChain, nextObject);
     } else {
         return {
@@ -41,7 +41,7 @@ class Config {
         if (Array.isArray(config[lastKey])) {
             config[lastKey].push(value);
         } else {
-            config[lastKey] = value;
+            config[lastKey] = [value];
         }
         return this;
     }

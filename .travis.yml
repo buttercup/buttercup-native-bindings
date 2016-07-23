@@ -1,0 +1,10 @@
+dist: trusty
+script:
+  - npm test
+language: node_js
+node_js:
+  - "6.3"
+  - "6.2"
+  - "5.12"
+  - "5.11"
+  - "5.10"

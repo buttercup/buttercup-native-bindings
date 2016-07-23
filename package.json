@@ -4,7 +4,7 @@
   "description": "OS tools and bindings for client integration",
   "main": "source/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "nodeunit test/specs/*.spec.js"
   },
   "repository": {
     "type": "git",
@@ -22,5 +22,8 @@
   "bugs": {
     "url": "https://github.com/buttercup-pw/buttercup-native-bindings/issues"
   },
-  "homepage": "https://github.com/buttercup-pw/buttercup-native-bindings#readme"
+  "homepage": "https://github.com/buttercup-pw/buttercup-native-bindings#readme",
+  "devDependencies": {
+    "nodeunit": "^0.9.1"
+  }
 }
