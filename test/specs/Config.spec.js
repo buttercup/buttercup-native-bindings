@@ -16,13 +16,19 @@ module.exports = {
             }
         });
         this.defaultConfiguration = {
-            configFilename: "./.test.config"
+            configFilename: ".test.config",
+            configLocation: {
+                macos: ".",
+                linux: "."
+            }
         };
-        rimraf.sync("./.test.config");
+        this.defaultConfigPath = Config.getPathForConfig(this.defaultConfiguration);
+        rimraf.sync(this.defaultConfigPath);
         cb();
     },
 
     tearDown: function(cb) {
+        rimraf.sync(this.defaultConfigPath);
         cb();
     },
 
@@ -68,7 +74,7 @@ module.exports = {
         },
 
         loadsExistingConfig: function(test) {
-            fs.writeFileSync("./.test.config", JSON.stringify({
+            fs.writeFileSync(this.defaultConfigPath, JSON.stringify({
                 test: {
                     value: 123
                 }
@@ -98,6 +104,38 @@ module.exports = {
             this.previousConfig.push("collection", 0);
             test.strictEqual(this.previousConfig._config.collection.join(","), "1,2,0", "All values should be pushed");
             test.done();
+        }
+
+    },
+
+    saveWithDefault: {
+
+        savesEmptyConfig: function(test) {
+            Config
+                .saveWithDefault(this.basicConfig, this.defaultConfiguration)
+                .then(() => {
+                    var content = fs.readFileSync(this.defaultConfigPath, "utf8"),
+                        processed = JSON.parse(content);
+                    test.strictEqual(Object.keys(processed).length, 0, "Should be an empty object");
+                    test.done();
+                })
+                .catch(function(err) {
+                    console.error(err);
+                });
+        },
+
+        savesFilledConfig: function(test) {
+            Config
+                .saveWithDefault(this.previousConfig, this.defaultConfiguration)
+                .then(() => {
+                    var content = fs.readFileSync(this.defaultConfigPath, "utf8"),
+                        processed = JSON.parse(content);
+                    test.strictEqual(processed.collection.join(","), "1,2", "Included properties should exist");
+                    test.done();
+                })
+                .catch(function(err) {
+                    console.error(err);
+                });
         }
 
     },

@@ -1,8 +1,15 @@
 const fs = require("fs");
+const path = require("path");
+
+const detectOS = require("./os.js").getOSIdentifier;
 
 const defaults = {
     ButtercupCLI: {
-        configFilename: ".buttercup-cli.config"
+        configFilename: ".buttercup-cli.config",
+        configLocation: {
+            macos: "~",
+            linux: "~/.config"
+        }
     }
 };
 
@@ -24,11 +31,12 @@ function resolvePropertyContext(propertyChain, object) {
 
 class Config {
 
-    constructor(configuration) {
+    constructor(configuration, defaultObject) {
         if (typeof configuration !== "object") {
             throw new Error("Configuration should be of type 'object'");
         }
         this._config = Object.assign({}, configuration);
+        this._default = defaultObject || null;
     }
 
     get(property, defaultValue) {
@@ -37,6 +45,10 @@ class Config {
             return config[lastKey];
         }
         return defaultValue;
+    }
+
+    getRaw() {
+        return Object.assign({}, this._config);
     }
 
     push(property, value) {
@@ -49,6 +61,10 @@ class Config {
         return this;
     }
 
+    save() {
+        return Config.saveWithDefault(this, this._default);
+    }
+
     write(property, value) {
         let { config, lastKey } = resolvePropertyContext(property.split("."), this._config);
         config[lastKey] = value;
@@ -57,18 +73,48 @@ class Config {
 
 }
 
+Config.getPathForConfig = function getPathForConfig(defaultNameOrObject) {
+    let def = (typeof defaultNameOrObject === "string") ? defaults[defaultName] : defaultNameOrObject;
+    if (!def) {
+        throw new Error(`Unknown default: ${defaultName}`);
+    }
+    let os = detectOS(),
+        configPath = def.configLocation[os],
+        configFilename = def.configFilename,
+        absPath = path.resolve(path.join(configPath, configFilename));
+    return absPath;
+}
+
 Config.loadFromDefault = function loadFromDefault(defaultNameOrObject) {
     let def = (typeof defaultNameOrObject === "string") ? defaults[defaultName] : defaultNameOrObject;
     if (!def) {
         throw new Error(`Unknown default: ${defaultName}`);
     }
-    let raw;
+    let raw,
+        configPath = Config.getPathForConfig(def);
     return new Promise(function(resolve) {
-        fs.readFile(def.configFilename, "utf8", function(err, contents) {
+        fs.readFile(configPath, "utf8", function(err, contents) {
             if (err) {
-                resolve(new Config({}));
+                resolve(new Config({}, def));
             } else {
-                resolve(new Config(JSON.parse(contents)));
+                resolve(new Config(JSON.parse(contents), def));
+            }
+        });
+    });
+};
+
+Config.saveWithDefault = function saveWithDefault(config, defaultNameOrObject) {
+    let def = (typeof defaultNameOrObject === "string") ? defaults[defaultName] : defaultNameOrObject;
+    if (!def) {
+        throw new Error(`Unknown default: ${defaultName}`);
+    }
+    let configPath = Config.getPathForConfig(def);
+    return new Promise(function(resolve, reject) {
+        fs.writeFile(configPath, JSON.stringify(config.getRaw()), function(err) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve();
             }
         });
     });
