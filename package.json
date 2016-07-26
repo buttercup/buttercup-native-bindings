@@ -4,7 +4,7 @@
   "description": "OS tools and bindings for client integration",
   "main": "source/index.js",
   "scripts": {
-    "test": "nodeunit test/specs/*.spec.js"
+    "test": "mocha --recursive"
   },
   "repository": {
     "type": "git",
@@ -24,7 +24,8 @@
   },
   "homepage": "https://github.com/buttercup-pw/buttercup-native-bindings#readme",
   "devDependencies": {
-    "nodeunit": "^0.9.1",
+    "chai": "^3.5.0",
+    "mocha": "^2.5.3",
     "rimraf": "^2.5.4"
   }
 }
