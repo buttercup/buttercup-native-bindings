@@ -1,0 +1,28 @@
+platform: Any CPU
+
+environment:
+  nodejs_version: "6.3"
+
+install:
+  # Get the latest stable version of Node.js or io.js
+  - ps: Install-Product node $env:nodejs_version
+  # install modules
+  - npm install
+
+test_script:
+  # Output useful info for debugging.
+  - node --version
+  - npm --version
+  # run tests
+  - npm test
+
+build: off
+
+notifications:
+  - provider: Email
+    to:
+      - perry@perrymitchell.net
+      - sallar.kaboli@gmail.com
+    subject: 'Build {{status}}'
+    message: "{{message}}, {{commitId}}, ..."
+    on_build_status_changed: true
