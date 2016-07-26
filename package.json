@@ -1,0 +1,31 @@
+{
+  "name": "buttercup-native-bindings",
+  "version": "0.2.0",
+  "description": "OS tools and bindings for client integration",
+  "main": "source/index.js",
+  "scripts": {
+    "test": "mocha --recursive"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/buttercup-pw/buttercup-native-bindings.git"
+  },
+  "keywords": [
+    "buttercup",
+    "native",
+    "OS",
+    "utility",
+    "config"
+  ],
+  "author": "Perry Mitchell <perry@perrymitchell.net>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/buttercup-pw/buttercup-native-bindings/issues"
+  },
+  "homepage": "https://github.com/buttercup-pw/buttercup-native-bindings#readme",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^2.5.3",
+    "rimraf": "^2.5.4"
+  }
+}
