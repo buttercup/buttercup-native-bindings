@@ -17,12 +17,3 @@ test_script:
   - npm test
 
 build: off
-
-notifications:
-  - provider: Email
-    to:
-      - perry@perrymitchell.net
-      - sallar.kaboli@gmail.com
-    subject: 'Build {{status}}'
-    message: "{{message}}, {{commitId}}, ..."
-    on_build_status_changed: true
