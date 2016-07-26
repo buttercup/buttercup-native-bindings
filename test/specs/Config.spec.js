@@ -21,7 +21,8 @@ describe("Config", function() {
             configFilename: ".test.config",
             configLocation: {
                 macos: ".",
-                linux: "."
+                linux: ".",
+                windows: "."
             }
         };
         this.defaultConfigPath = Config.getPathForConfig(this.defaultConfiguration);

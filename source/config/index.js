@@ -8,7 +8,8 @@ const defaults = {
         configFilename: ".buttercup-cli.config",
         configLocation: {
             macos: "~",
-            linux: "~/.config"
+            linux: "~/.config",
+            windows: "%UserProfile%"
         }
     }
 };
