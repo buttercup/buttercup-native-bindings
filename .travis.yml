@@ -4,11 +4,13 @@ matrix:
   include:
     - os: linux
       dist: trusty
+      node_js:
+        - "6.3"
+        - "6.2"
     - os: osx
+      node_js:
+        - "6.3"
+        - "6.2"
 
 script:
   - npm test
-
-node_js:
-  - "6.3"
-  - "6.2"
