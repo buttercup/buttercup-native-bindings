@@ -1,15 +1,17 @@
 const fs = require("fs");
 const path = require("path");
 
-const detectOS = require("./os.js").getOSIdentifier;
+const { getOSIdentifier, getUserHomePath } = require("./os.js");
+
+const userHome = getUserHomePath();
 
 const defaults = {
     ButtercupCLI: {
         configFilename: ".buttercup-cli.config",
         configLocation: {
-            macos: "~",
-            linux: "~/.config",
-            windows: "%UserProfile%"
+            macos: userHome,
+            linux: path.join(userHome, ".config"),
+            windows: userHome
         }
     }
 };
@@ -79,7 +81,7 @@ Config.getPathForConfig = function getPathForConfig(defaultNameOrObject) {
     if (!def) {
         throw new Error(`Unknown default: ${defaultName}`);
     }
-    let os = detectOS(),
+    let os = getOSIdentifier(),
         configPath = def.configLocation[os],
         configFilename = def.configFilename,
         absPath = path.resolve(path.join(configPath, configFilename));
@@ -87,9 +89,9 @@ Config.getPathForConfig = function getPathForConfig(defaultNameOrObject) {
 }
 
 Config.loadFromDefault = function loadFromDefault(defaultNameOrObject) {
-    let def = (typeof defaultNameOrObject === "string") ? defaults[defaultName] : defaultNameOrObject;
+    let def = (typeof defaultNameOrObject === "string") ? defaults[defaultNameOrObject] : defaultNameOrObject;
     if (!def) {
-        throw new Error(`Unknown default: ${defaultName}`);
+        throw new Error(`Unknown default: ${defaultNameOrObject}`);
     }
     let raw,
         configPath = Config.getPathForConfig(def);

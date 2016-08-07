@@ -1,3 +1,5 @@
+const os = require("os");
+
 module.exports = {
 
     getOSIdentifier: function() {
@@ -13,6 +15,10 @@ module.exports = {
             default:
                 return null;
         }
+    },
+
+    getUserHomePath: function() {
+        return os.homedir();
     }
 
 };
